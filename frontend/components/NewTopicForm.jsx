@@ -10,13 +10,25 @@ export default function NewTopicForm() {
   function handleSubmit(e) {
     e.preventDefault();
     setSuccess("");
-    if (title.trim().length < 3) {
+    const normalizedTitle = title.trim().replace(/\s+/g, " ");
+    const normalizedDescription = description.trim();
+
+    if (normalizedTitle.length < 3) {
       setError("Informe um título com pelo menos 3 caracteres.");
       return;
     }
+    if (normalizedTitle.length > 80) {
+      setError("O título deve ter no máximo 80 caracteres.");
+      return;
+    }
+    if (normalizedDescription.length > 300) {
+      setError("A descrição deve ter no máximo 300 caracteres.");
+      return;
+    }
+
     setError("");
-    addTopic(title.trim(), description.trim() || "Tópico criado pelo professor.");
-    setSuccess(`Tópico "${title.trim()}" criado! Os exercícios serão gerados pela IA na Sprint 2.`);
+    addTopic(normalizedTitle, normalizedDescription || "Tópico criado pelo professor.");
+    setSuccess(`Tópico "${normalizedTitle}" criado! Os exercícios serão gerados pela IA na Sprint 2.`);
     setTitle("");
     setDescription("");
   }
@@ -31,6 +43,8 @@ export default function NewTopicForm() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ex.: Present Continuous"
+          maxLength={81}
+          aria-invalid={Boolean(error)}
           className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
         />
       </div>
@@ -43,12 +57,13 @@ export default function NewTopicForm() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={2}
+          maxLength={301}
           placeholder="Onde a turma está com mais dificuldade?"
           className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
         />
       </div>
-      {error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
-      {success && <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{success}</p>}
+      {error && <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
+      {success && <p role="status" className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{success}</p>}
       <button
         type="submit"
         className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
