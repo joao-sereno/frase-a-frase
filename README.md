@@ -47,6 +47,6 @@ Será adicionado nas próximas sprints (FastAPI, JWT, SQLModel).
 
 ## Equipe
 
-- (nome 1)
-- (nome 2)
-- (nome 3, se houver)
+- João Lucas Damato Drummond
+- João Pedro de Oliveira Mendes Sereno 
+
