@@ -10,7 +10,7 @@ Sistema web para praticar a construção de frases em inglês com apoio de IA, v
 
 ## Estado atual: Sprint 1
 
-Frontend em Next.js com **dados mockados** (a correção por IA é simulada em `frontend/lib/feedback.ts`). Já inclui:
+Frontend em Next.js com **dados mockados** (a correção por IA é simulada em `frontend/lib/feedback.js`). Já inclui:
 
 - componentes reutilizáveis (`frontend/components/`)
 - formulário de resposta com feedback visual (acerto, erro e carregamento)
