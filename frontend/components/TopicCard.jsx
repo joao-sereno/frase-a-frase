@@ -1,10 +1,6 @@
 import Link from "next/link";
-import { Topic } from "@/lib/types";
 import ProgressBar from "@/components/ProgressBar";
-
-type Props = { topic: Topic; done: number };
-
-export default function TopicCard({ topic, done }: Props) {
+export default function TopicCard({ topic, done }) {
   const ready = topic.exercises.length > 0;
   return (
     <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -24,7 +20,9 @@ export default function TopicCard({ topic, done }: Props) {
             </Link>
           </>
         ) : (
-          <p className="rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-500">Em preparação: a IA vai gerar os exercícios (Sprint 2).</p>
+          <p className="rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-500">
+            Em preparação: a IA vai gerar os exercícios (Sprint 2).
+          </p>
         )}
       </div>
     </div>

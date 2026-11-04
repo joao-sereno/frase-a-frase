@@ -1,13 +1,10 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 const links = [
   { href: "/", label: "Aluno" },
   { href: "/professor/", label: "Professor" },
 ];
-
 export default function Header() {
   const pathname = usePathname();
   return (
@@ -23,9 +20,7 @@ export default function Header() {
               <Link
                 key={l.href}
                 href={l.href}
-                className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
-                  active ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-100"
-                }`}
+                className={`rounded-lg px-3 py-1.5 text-sm font-medium ${active ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-100"}`}
               >
                 {l.label}
               </Link>

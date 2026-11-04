@@ -1,16 +1,13 @@
 "use client";
-
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
-
 export default function NewTopicForm() {
   const { addTopic } = useApp();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e) {
     e.preventDefault();
     setSuccess("");
     if (title.trim().length < 3) {
@@ -23,7 +20,6 @@ export default function NewTopicForm() {
     setTitle("");
     setDescription("");
   }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div>
@@ -53,7 +49,10 @@ export default function NewTopicForm() {
       </div>
       {error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
       {success && <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{success}</p>}
-      <button type="submit" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+      <button
+        type="submit"
+        className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+      >
         Criar tópico
       </button>
     </form>

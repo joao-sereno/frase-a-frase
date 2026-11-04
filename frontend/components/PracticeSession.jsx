@@ -1,28 +1,22 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import { useApp } from "@/context/AppContext";
 import { evaluate } from "@/lib/feedback";
-import { Feedback, Topic } from "@/lib/types";
 import FeedbackBox from "@/components/FeedbackBox";
 import LevelBadge from "@/components/LevelBadge";
 import ProgressBar from "@/components/ProgressBar";
-
-export default function PracticeSession({ topic }: { topic: Topic }) {
+export default function PracticeSession({ topic }) {
   const { addAttempt } = useApp();
   const exercises = [...topic.exercises].sort((a, b) => a.level - b.level);
-
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState("");
-  const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [feedback, setFeedback] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [correctIds, setCorrectIds] = useState<string[]>([]);
-
+  const [correctIds, setCorrectIds] = useState([]);
   const finished = index >= exercises.length;
   const current = exercises[index];
-
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e) {
     e.preventDefault();
     if (loading) return;
     setLoading(true);
@@ -46,13 +40,11 @@ export default function PracticeSession({ topic }: { topic: Topic }) {
       }
     }, 700);
   }
-
   function next() {
     setIndex((i) => i + 1);
     setAnswer("");
     setFeedback(null);
   }
-
   if (finished) {
     return (
       <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
@@ -60,13 +52,15 @@ export default function PracticeSession({ topic }: { topic: Topic }) {
         <p className="mt-2 text-slate-600">
           Você acertou {correctIds.length} de {exercises.length} frases em {topic.title}.
         </p>
-        <Link href="/" className="mt-6 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+        <Link
+          href="/"
+          className="mt-6 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+        >
           Voltar às trilhas
         </Link>
       </div>
     );
   }
-
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-4">
@@ -109,7 +103,10 @@ export default function PracticeSession({ topic }: { topic: Topic }) {
         <div className="mt-4 space-y-3">
           <FeedbackBox feedback={feedback} />
           {feedback.status === "correct" && (
-            <button onClick={next} className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">
+            <button
+              onClick={next}
+              className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+            >
               {index + 1 < exercises.length ? "Próxima frase (o nível pode subir)" : "Finalizar"}
             </button>
           )}

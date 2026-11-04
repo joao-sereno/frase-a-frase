@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   // Gera um site estático (pasta "out/") que pode ser publicado na Vercel, GitHub Pages etc.
   output: "export",
   trailingSlash: true,

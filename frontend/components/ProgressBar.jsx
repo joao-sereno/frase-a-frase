@@ -1,4 +1,4 @@
-export default function ProgressBar({ value, max }: { value: number; max: number }) {
+export default function ProgressBar({ value, max }) {
   const pct = max === 0 ? 0 : Math.round((value / max) * 100);
   return (
     <div>

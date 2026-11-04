@@ -1,13 +1,10 @@
-import { Feedback } from "@/lib/types";
-
-export default function FeedbackBox({ feedback }: { feedback: Feedback }) {
+export default function FeedbackBox({ feedback }) {
   const styles = {
     correct: "border-emerald-300 bg-emerald-50 text-emerald-900",
     wrong: "border-rose-300 bg-rose-50 text-rose-900",
     empty: "border-amber-300 bg-amber-50 text-amber-900",
   }[feedback.status];
   const title = { correct: "Correto!", wrong: "Quase lá", empty: "Atenção" }[feedback.status];
-
   return (
     <div role="status" className={`rounded-xl border p-4 ${styles}`}>
       <p className="font-semibold">{title}</p>
