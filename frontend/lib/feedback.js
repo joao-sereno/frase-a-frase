@@ -1,3 +1,4 @@
+
 export function normalize(text) {
   return text
     .toLowerCase()
@@ -6,19 +7,43 @@ export function normalize(text) {
     .replace(/\s+/g, " ")
     .trim();
 }
-// MOCK da correção por IA. Na Sprint 2 esta função será substituída por uma chamada à API (FastAPI + IA).
+
+// Correção simulada utilizada na Sprint 1.
+// Mantida para testes e possível fallback de desenvolvimento.
+// A Sprint 2 utiliza a API FastAPI em PracticeSession.jsx.
 export function evaluate(exercise, answer) {
   const norm = normalize(answer);
+
   if (!norm) {
-    return { status: "empty", message: "Escreva uma frase em inglês antes de enviar." };
+    return {
+      status: "empty",
+      message: "Escreva uma frase em inglês antes de enviar.",
+    };
   }
-  if (exercise.accepted.some((a) => normalize(a) === norm)) {
-    return { status: "correct", message: "Muito bem! Sua frase está correta.", suggestion: exercise.suggestion };
+
+  if (
+    exercise.accepted.some(
+      (acceptedAnswer) =>
+        normalize(acceptedAnswer) === norm
+    )
+  ) {
+    return {
+      status: "correct",
+      message: "Muito bem! Sua frase está correta.",
+      suggestion: exercise.suggestion,
+    };
   }
-  const found = exercise.mistakes.find((m) => new RegExp(m.pattern, "i").test(norm));
+
+  const found = exercise.mistakes.find(
+    (mistake) =>
+      new RegExp(mistake.pattern, "i").test(norm)
+  );
+
   return {
     status: "wrong",
-    message: found ? found.explanation : exercise.tip,
+    message: found
+      ? found.explanation
+      : exercise.tip,
     suggestion: exercise.suggestion,
   };
 }
