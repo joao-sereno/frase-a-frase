@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.routers import exercises
 
+from fastapi.middleware.cors import CORSMiddleware
+
 settings = get_settings()
 
 app = FastAPI(
@@ -14,8 +16,12 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://frase-a-frase-flax.vercel.app",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
