@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     ai_timeout_seconds: float = 30.0
     cors_origins: str = "http://localhost:3000"
 
+
+    jwt_secret: str = "496c95fc5373168f76d3a5025b66ddb53c34ac456165256ff7ba757c6aa86735"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 1440
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip().rstrip("/") for o in self.cors_origins.split(",") if o.strip()]

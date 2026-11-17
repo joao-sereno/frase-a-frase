@@ -1,5 +1,8 @@
-.env
+cat << 'EOF' > .gitignore
 .venv/
 __pycache__/
 *.pyc
-.pytest_cache/
+.env
+node_modules/
+dist/
+EOF
