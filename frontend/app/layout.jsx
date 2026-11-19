@@ -1,18 +1,25 @@
+
 import "./globals.css";
-import { AuthProvider } from "../context/AuthContext";
+
 import { AppProvider } from "@/context/AppContext";
+import { AuthProvider } from "@/context/AuthContext";
 import Header from "@/components/Header";
+
 export const metadata = {
   title: "Frase a Frase",
-  description: "Pratique a construção de frases em inglês com apoio de IA.",
+  description: "Aprenda inglês com exercícios e IA",
 };
+
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body>
         <AuthProvider>
           <AppProvider>
-            {children}
+            <Header />
+            <main className="mx-auto max-w-4xl px-4 py-8">
+              {children}
+            </main>
           </AppProvider>
         </AuthProvider>
       </body>

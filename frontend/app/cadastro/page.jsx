@@ -40,7 +40,7 @@ export default function CadastroPage() {
       if (user.role === "teacher") {
         router.replace("/professor");
       } else {
-        router.replace("/praticar");
+        router.replace("/");
       }
     } catch (err) {
       setError(err.message);

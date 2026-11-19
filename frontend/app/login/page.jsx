@@ -26,7 +26,7 @@ export default function LoginPage() {
       if (user.role === "teacher") {
         router.replace("/professor");
       } else {
-        router.replace("/praticar");
+        router.replace("/");
       }
     } catch (err) {
       setError(err.message);

@@ -29,7 +29,11 @@ export default function PracticeSession({ topic }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (loading || finished || feedback?.status === "correct") {
+    if (
+      loading ||
+      finished ||
+      feedback?.status === "correct"
+    ) {
       return;
     }
 
@@ -47,28 +51,30 @@ export default function PracticeSession({ topic }) {
     setApiError("");
 
     try {
-      // Envia o exercício completo e a resposta para o FastAPI.
+      // Envia a frase para correção pela API FastAPI.
       const data = await correctSentence(current, answer);
 
       const result = {
         status: data.correct ? "correct" : "wrong",
         message: data.feedback,
-        suggestion: data.suggestion || current.suggestion || "",
+        suggestion:
+          data.suggestion || current.suggestion || "",
       };
 
       setFeedback(result);
 
-      // Registra a tentativa no estado global.
+      // Atualiza o histórico local com a tentativa.
       addAttempt({
         topicId: topic.id,
         exerciseId: current.id,
         situation: current.situation,
-        answer,
-        correct: result.status === "correct",
+        answer: answer.trim(),
+        correct: data.correct,
+        date: new Date().toLocaleDateString("pt-BR"),
       });
 
-      // Atualiza a barra de progresso.
-      if (result.status === "correct") {
+      // Atualiza o progresso quando a frase está correta.
+      if (data.correct) {
         setCorrectIds((prev) =>
           prev.includes(current.id)
             ? prev
@@ -78,9 +84,10 @@ export default function PracticeSession({ topic }) {
     } catch (error) {
       console.error("Erro na API de correção:", error);
 
+      // Exibe a mensagem real retornada pela API.
       setApiError(
-        "Não foi possível corrigir a frase. " +
-        "Verifique se o servidor está funcionando e tente novamente."
+        error.message ||
+          "Não foi possível corrigir a frase. Tente novamente."
       );
     } finally {
       setLoading(false);
@@ -102,8 +109,8 @@ export default function PracticeSession({ topic }) {
         </h2>
 
         <p className="mt-2 text-slate-600">
-          Você acertou {correctIds.length} de {exercises.length} frases em{" "}
-          {topic.title}.
+          Você acertou {correctIds.length} de{" "}
+          {exercises.length} frases em {topic.title}.
         </p>
 
         <Link
@@ -193,6 +200,7 @@ export default function PracticeSession({ topic }) {
 
           {feedback.status === "correct" && (
             <button
+              type="button"
               onClick={next}
               className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
             >
@@ -204,6 +212,7 @@ export default function PracticeSession({ topic }) {
 
           {feedback.status === "wrong" && (
             <button
+              type="button"
               onClick={next}
               className="text-sm text-slate-500 underline hover:text-slate-700"
             >

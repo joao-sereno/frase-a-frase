@@ -6,108 +6,54 @@ import { useApp } from "@/context/AppContext";
 import { generateExercises } from "@/lib/api";
 
 export default function NewTopicForm() {
-  const { addTopic } = useApp();
+  const { refreshData } = useApp();
 
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function validate() {
-    const normalizedTitle = title.trim().replace(/\s+/g, " ");
-    const normalizedDescription = description.trim();
-
-    if (normalizedTitle.length < 3) {
-      setError("Informe um título com pelo menos 3 caracteres.");
-      return null;
-    }
-
-    if (normalizedTitle.length > 80) {
-      setError("O título deve ter no máximo 80 caracteres.");
-      return null;
-    }
-
-    if (normalizedDescription.length > 300) {
-      setError("A descrição deve ter no máximo 300 caracteres.");
-      return null;
-    }
-
-    setError("");
-
-    return {
-      title: normalizedTitle,
-      description:
-        normalizedDescription || "Tópico criado pelo professor.",
-    };
-  }
-
-  function resetForm() {
-    setTitle("");
-    setDescription("");
-  }
-
-  // Cadastro tradicional, sem depender do backend.
-  function handleSubmit(e) {
+  async function handleGenerate(e) {
     e.preventDefault();
 
     if (loading) return;
 
+    setError("");
     setSuccess("");
 
-    const data = validate();
-    if (!data) return;
+    const normalizedTitle = title.trim().replace(/\s+/g, " ");
 
-    addTopic(data.title, data.description);
+    if (normalizedTitle.length < 3) {
+      setError("Informe um tópico com pelo menos 3 caracteres.");
+      return;
+    }
 
-    setSuccess(
-      `Tópico "${data.title}" criado com sucesso! ` +
-      "Os exercícios poderão ser gerados pela IA posteriormente."
-    );
-
-    resetForm();
-  }
-
-  // Novo recurso da Sprint 2.
-  async function handleGenerate() {
-    if (loading) return;
-
-    setSuccess("");
-
-    const data = validate();
-    if (!data) return;
+    if (normalizedTitle.length > 80) {
+      setError("O tópico deve ter no máximo 80 caracteres.");
+      return;
+    }
 
     setLoading(true);
 
     try {
-      // Solicita exercícios ao FastAPI.
-      const response = await generateExercises(data.title);
+      // O backend gera os exercícios e cria o tópico.
+      const response = await generateExercises(normalizedTitle);
 
-      // Contrato proposto: { exercises: [...] }
-      const exercises = response.exercises;
-
-      if (!Array.isArray(exercises) || exercises.length === 0) {
-        throw new Error(
-          "A API não retornou uma lista válida de exercícios."
-        );
-      }
-
-      // O cadastro só será concluído quando o contexto
-      // permitir armazenar os exercícios gerados.
-      addTopic(data.title, data.description, exercises);
+      // Recarrega a lista diretamente do backend.
+      await refreshData();
 
       setSuccess(
-        `Tópico "${data.title}" criado com ${exercises.length} exercícios gerados pela IA!`
+        `Tópico "${normalizedTitle}" criado com ` +
+          `${response.exercises.length} exercícios!`
       );
 
-resetForm();
-
+      setTitle("");
     } catch (err) {
       console.error("Erro ao gerar exercícios:", err);
 
       setError(
-        "Não foi possível gerar os exercícios com IA. " +
-        "Verifique se o servidor FastAPI está funcionando."
+        err.message ||
+          "Não foi possível gerar os exercícios."
       );
     } finally {
       setLoading(false);
@@ -116,7 +62,7 @@ resetForm();
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleGenerate}
       className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
     >
       <div>
@@ -133,31 +79,17 @@ resetForm();
           onChange={(e) => setTitle(e.target.value)}
           disabled={loading}
           placeholder="Ex.: Present Continuous"
-          maxLength={81}
-          aria-invalid={Boolean(error)}
+          maxLength={80}
+          required
           className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 disabled:bg-slate-100"
         />
       </div>
 
-      <div>
-        <label
-          htmlFor="desc"
-          className="block text-sm font-medium"
-        >
-          Descrição (opcional)
-        </label>
-
-        <textarea
-          id="desc"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          disabled={loading}
-          rows={2}
-          maxLength={301}
-          placeholder="Onde a turma está com mais dificuldade?"
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-indigo-500 focus:ring-2 focus-indigo-200 disabled:bg-slate-100"
-        />
-      </div>
+      <p className="text-sm text-slate-500">
+        A inteligência artificial irá gerar exercícios
+        para o tópico escolhido e disponibilizá-los
+        para os alunos.
+      </p>
 
       {error && (
         <p
@@ -177,26 +109,15 @@ resetForm();
         </p>
       )}
 
-      <div className="flex flex-wrap gap-3">
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
-        >
-          Criar tópico
-        </button>
-
-        <button
-          type="button"
-          onClick={handleGenerate}
-          disabled={loading}
-          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
-        >
-          {loading
-            ? "Gerando exercícios..."
-            : "Gerar exercícios com IA"}
-        </button>
-      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
+      >
+        {loading
+          ? "Gerando exercícios com IA..."
+          : "Gerar exercícios com IA"}
+      </button>
     </form>
   );
 }
