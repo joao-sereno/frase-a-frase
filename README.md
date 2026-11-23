@@ -148,6 +148,14 @@ Como o armazenamento atual opera em memória (`app/store.py`), os dados são rei
 - `POST /api/auth/login`: login via JSON (usado pelo frontend), retorna o `access_token` JWT.
 - `POST /api/auth/token`: login OAuth2 (usado pelo botão Authorize do `/docs`).
 - `GET /api/auth/me`: retorna os dados do usuário autenticado via cabeçalho `Authorization: Bearer <token>`.
+  
+### Trilhas e desempenho
+
+- `GET /api/topics`: lista os tópicos disponíveis e a quantidade de exercícios.
+- `GET /api/topics/{topic_id}`: retorna um tópico com seus exercícios.
+- `GET /api/attempts`: consulta o histórico de tentativas do usuário autenticado ou da turma, conforme o perfil.
+- `GET /api/stats`: retorna estatísticas de desempenho, incluindo tentativas, acertos, erros, taxa de acerto e erros por tópico.
+
 
 ### POST /api/correct
 ```json
