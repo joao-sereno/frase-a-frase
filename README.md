@@ -33,12 +33,34 @@ Frontend em Next.js integrado à API FastAPI, com autenticação JWT, armazename
 - endpoints de geração de exercícios (`POST /api/generate`) e correção de frases (`POST /api/correct`)
 - armazenamento em memória (`backend/app/store.py`) e hospedagem inicial no Render
 
+
 ### Sprint 3 — Autenticação JWT, Seed e integração em produção
-- implementação da autenticação JWT (`backend/app/routers/auth.py` com `/api/auth/register`, `/api/auth/login`, `/api/auth/token` e `/api/auth/me`)
-- criação do módulo de carga inicial (`backend/app/seed.py`) com contas de demonstração
-- proteção das rotas de IA com token JWT e configuração de `CORS_ORIGINS` para o domínio de produção
-- substituição dos dados mockados do frontend (`frontend/lib/feedback.js`) por chamadas reais à API via `NEXT_PUBLIC_API_URL`
-- publicação do frontend na Vercel integrado ao backend no Render
+
+**Backend:**
+- Implementação da autenticação JWT, com endpoints de cadastro, login e consulta do usuário autenticado.
+- Criação do módulo `backend/app/seed.py` com contas de demonstração e dados iniciais.
+- Proteção dos endpoints com autenticação e controle de acesso por perfil (aluno e professor).
+- Implementação dos endpoints de tópicos, tentativas e estatísticas.
+- Configuração de `JWT_SECRET` e `CORS_ORIGINS` para o ambiente de produção.
+
+**Frontend:**
+- Criação das páginas de login e cadastro, integradas à autenticação JWT.
+- Implementação do `AuthContext.jsx` para gerenciamento da sessão, recuperação do usuário autenticado e logout.
+- Criação do `ProtectedRoute.jsx` para proteção das páginas de aluno e professor.
+- Atualização do cabeçalho para exibir o nome, o perfil do usuário e o botão de logout.
+- Centralização das requisições HTTP em `frontend/lib/api.js`, com envio automático do token JWT e tratamento de erros.
+- Integração das trilhas e exercícios com os endpoints reais da API, substituindo os dados mockados.
+- Integração da correção de frases com `POST /api/correct` e do histórico de tentativas com `GET /api/attempts`.
+- Integração do formulário do professor com `POST /api/generate` para geração de exercícios com IA.
+- Implementação do painel de desempenho da turma, utilizando `GET /api/stats` para exibir tentativas, acertos, erros e taxa de acerto.
+- Implementação de estados de carregamento e mensagens de erro para melhorar a experiência do usuário.
+- Remoção das rotas estáticas antigas de prática, utilizando identificadores dinâmicos dos tópicos fornecidos pelo backend.
+
+**Integração e publicação:**
+- Integração entre o frontend Next.js (Vercel) e o backend FastAPI (Render).
+- Configuração da variável `NEXT_PUBLIC_API_URL` para comunicação entre os serviços.
+- Validação da compilação de produção do frontend com `npm run build`.
+
 
 ## Estrutura
 
